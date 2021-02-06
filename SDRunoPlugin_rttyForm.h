@@ -22,7 +22,8 @@
 #define sideBorderWidth (8)
 
 // TODO: Change these numbers to the height and width of your form
-#define formWidth (297)
+//#define formWidth (297)
+#define formWidth (550)
 #define formHeight (240)
 
 class SDRunoPlugin_rttyUi;
@@ -85,30 +86,31 @@ private:
 
 //
 //	then the selectors
-	nana::label  xx1           { *this, nana::rectangle(60, 30, 100, 15) };
-	nana::combox widthSelector {*this, nana::rectangle (60, 50, 100, 20) };
+	nana::label  xx1           { *this, nana::rectangle(60, 30, 90, 15) };
+	nana::combox widthSelector {*this, nana::rectangle (60, 50, 90, 20) };
 
-	nana::label  xx2           { *this, nana::rectangle(170, 30, 100, 15) };
-	nana::combox rateSelector  {*this, nana::rectangle (170, 50, 100, 20) };
+	nana::label  xx2           { *this, nana::rectangle(170, 30, 90, 15) };
+	nana::combox rateSelector  {*this, nana::rectangle (170, 50, 90, 20) };
 
-	nana::label  xx3           { *this, nana::rectangle(60, 70, 100,  15) };
-	nana::combox bitSelector   {*this, nana::rectangle (60, 90, 100, 20)};
+	nana::label  xx3           { *this, nana::rectangle(280, 30, 90,  15) };
+	nana::combox bitSelector   {*this, nana::rectangle (280, 50, 90, 20)};
 
-	nana::label  xx4           {*this,nana::rectangle  (170, 70, 100, 15) }; 
-	nana::combox stopbitsSelector {*this, nana::rectangle (170, 90, 100, 20) };
-	nana::label xx5            { *this, nana::rectangle(60, 120, 100, 15) };
-	nana::combox paritySelector {*this, nana::rectangle (60, 140, 100, 20) };
+	nana::label  xx4           {*this,nana::rectangle  (390, 30, 90, 15) }; 
+	nana::combox stopbitsSelector {*this, nana::rectangle (390, 50, 90, 20) };
 
-	nana::label xx6           {*this, nana::rectangle (170, 120, 100, 15) };
-	nana::combox msbSelector  {*this, nana::rectangle (170, 140, 100, 20) };
+	nana::label xx5            { *this, nana::rectangle(60, 70, 90, 15) };
+	nana::combox paritySelector {*this, nana::rectangle (60, 90, 90, 20) };
 
-	nana::label xx7           {*this, nana::rectangle (60,  160, 100, 15) };
-	nana::combox afcSelector  {*this, nana::rectangle (60,  180, 100, 20) };
+	nana::label xx6           {*this, nana::rectangle (170, 70, 90, 15) };
+	nana::combox msbSelector  {*this, nana::rectangle (170, 90, 90, 20) };
 
-	nana::label xx8           {*this, nana::rectangle (170, 160, 100, 15) };
-	nana::combox normalSelector {*this, nana::rectangle (170, 180, 100, 20)};
+	nana::label xx7           {*this, nana::rectangle (280,  70, 90, 15) };
+	nana::combox afcSelector  {*this, nana::rectangle (280,  90, 90, 20) };
 
-	nana::label rttyText {*this, nana::rectangle (20, 200, 250, 20) };
+	nana::label xx8           {*this, nana::rectangle (390, 70, 90, 15) };
+	nana::combox normalSelector {*this, nana::rectangle (390, 90, 90, 20)};
+
+	nana::label rttyText {*this, nana::rectangle (20, 200, 450, 20) };
 	SDRunoPlugin_rttyUi & m_parent;
 	IUnoPluginController & m_controller;
 };
