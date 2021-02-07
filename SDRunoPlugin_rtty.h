@@ -96,6 +96,7 @@ private:
 
 	int			rttyTonePhase;
 	int			SDRplay_Rate;
+	bool			rttyError;
 	void			WorkerFunction		();
 	void			testInput		(std::complex<float>);
 	void			process			(std::complex<float>);

@@ -32,6 +32,9 @@ spectrum display, showing only a fraction of the band, is very useful,
 especially when the zoom function is used.
 
 
+The implementation of the decoder is taken from the rtty decoder of the
+swradio-8 implementation.
+
 
 
 

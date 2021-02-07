@@ -25,7 +25,6 @@
 #define  _USE_MATH_DEFINES
 
 #include <math.h>
-//#include	"alloca.h"
 
 	decimator::decimator (int16_t filterSize,
 	                      int32_t low,

@@ -1,6 +1,6 @@
 #
-#ifndef	__UP_FILTER__
-#define	__UP_FILTER__
+#ifndef	__UP_FILTER_H
+#define	__UP_FILTER_H
 
 #include	<complex>
 #include	<vector>

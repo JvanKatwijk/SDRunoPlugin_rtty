@@ -1,21 +1,17 @@
 #include <iunoplugin.h>
 #include "SDRunoPlugin_rtty.h"
 
-extern "C"
-{
+extern "C" {
 
-	UNOPLUGINAPI IUnoPlugin* UNOPLUGINCALL CreatePlugin(IUnoPluginController& controller)
-	{
+	UNOPLUGINAPI IUnoPlugin* UNOPLUGINCALL CreatePlugin(IUnoPluginController& controller) {
 		return new SDRunoPlugin_rtty (controller);
 	}
 
-	UNOPLUGINAPI void UNOPLUGINCALL DestroyPlugin(IUnoPlugin* plugin)
-	{
+	UNOPLUGINAPI void UNOPLUGINCALL DestroyPlugin(IUnoPlugin* plugin) {
 		delete plugin;
 	}
 
-	UNOPLUGINAPI unsigned int UNOPLUGINCALL GetPluginApiLevel()
-	{
+	UNOPLUGINAPI unsigned int UNOPLUGINCALL GetPluginApiLevel() {
 		return UNOPLUGINAPIVERSION;
 	}
 }

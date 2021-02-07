@@ -91,13 +91,19 @@ SDRunoPlugin_rtty::
                         = m_controller -> GetVfoFrequency (0);
         centerFrequency = m_controller -> GetCenterFrequency (0);
         rttyAudioRate	= m_controller -> GetAudioSampleRate (0);
+        SDRplay_Rate	= m_controller -> GetSampleRate (0);
+        rttyError         = false;
+        if ((SDRplay_Rate != 2000000 / 32) || (rttyAudioRate != 48000)) {
+           m_form.  set_rttyText ("Please set input rate 2000000 / 32 and audiorate to 48000");
+           rttyError      = true;
+        }
+
 	rttyToneBuffer. resize (rttyAudioRate);
 	for (int i = 0; i < rttyAudioRate; i ++) {
 	   float term = (float)i / rttyAudioRate * 2 * M_PI;
 	   rttyToneBuffer [i] = std::complex<float> (cos (term), sin (term));
 	}
-	
-        audioFilter     = new upFilter (25, WORKING_RATE, rttyAudioRate);
+	audioFilter     = new upFilter (25, WORKING_RATE, rttyAudioRate);
 	m_worker        = new std::thread (&SDRunoPlugin_rtty::WorkerFunction,
 	                                                               this);
 }
@@ -118,7 +124,7 @@ void	SDRunoPlugin_rtty::StreamProcessorProcess (channel_t	channel,
 	                                           Complex	*buffer,
 	                                           int		length,
 	                                           bool		&modified) {
-	if (running. load ()) 
+	if (running. load () && !rttyError)
 	   rttyBuffer. putDataIntoBuffer (buffer, length);
 	modified = false;
 }
@@ -156,19 +162,20 @@ void	SDRunoPlugin_rtty::HandleEvent (const UnoEvent& ev) {
 	}
 }
 
+#define	BUFFER_SIZE 4096
 void	SDRunoPlugin_rtty::WorkerFunction () {
-Complex buffer [2048];
+Complex buffer [BUFFER_SIZE];
 
 	running. store (true);
 	while (running. load ()) {
 	   while (running. load () &&
-	              (rttyBuffer. GetRingBufferReadAvailable () < 2048))
+	              (rttyBuffer. GetRingBufferReadAvailable () < BUFFER_SIZE))
 	      Sleep (1);
 	   if (!running. load ())
 	      break;
-	   int N = rttyBuffer. getDataFromBuffer (buffer, 2048);
+	   int N = rttyBuffer. getDataFromBuffer (buffer, BUFFER_SIZE);
 	   int theOffset = centerFrequency - selectedFrequency;
-	   for (int i = 0; i < 2048; i++) {
+	   for (int i = 0; i < BUFFER_SIZE; i++) {
 	      std::complex<float> sample =
 	                std::complex<float>(buffer [i]. real, buffer [i]. imag);
 	      locker.lock ();
@@ -229,7 +236,7 @@ static int seconds = 0;
 }
 
 void    SDRunoPlugin_rtty::process (std::complex<float> z) {
-std::complex<float> out [256];
+std::complex<float> out [256];	// IN_RATE / DECIMATOR
 int     cnt;
 
         cnt = resample (z, out);
@@ -255,6 +262,7 @@ std::vector<std::complex<float>> tone (rttyAudioRate / WORKING_RATE);
 	locker. lock ();
 	z	= BPM_Filter -> Pass (z);
 	locker. unlock ();
+
 	audioFilter -> Filter (cmul (z, 20), tone. data ());
 	for (int i = 0; i < tone. size (); i ++) {
 	   tone [i] *= rttyToneBuffer [rttyTonePhase];
@@ -262,7 +270,6 @@ std::vector<std::complex<float>> tone (rttyAudioRate / WORKING_RATE);
 	}
 	rttyAudioBuffer. putDataIntoBuffer (tone. data (), tone. size () * 2);
 	z	= localShifter. do_shift (z, (int)rttyIF);
-
 
 // 	then we apply slicing to end up with omega and
 //	we compute the frequency offset
@@ -717,9 +724,4 @@ void	SDRunoPlugin_rtty::rtty_addText			(char c)  {
 	   textLine. erase (0, 1);
 	m_form. set_rttyText (textLine);
 }
-  jjuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
-
-
-
-
-	  `111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+  

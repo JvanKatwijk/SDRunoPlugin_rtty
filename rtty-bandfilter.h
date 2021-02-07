@@ -21,8 +21,8 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef __BANDPASS_FILTER__
-#define __BANDPASS_FILTER__
+#ifndef __BANDPASS_FILTER_H
+#define __BANDPASS_FILTER_H
 
 #include	<complex>
 #include	<vector>
