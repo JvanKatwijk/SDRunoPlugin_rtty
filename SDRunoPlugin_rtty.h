@@ -160,7 +160,7 @@ private:
 	double          rttyNoisePower;
 //
 //	former signals, now handled locally
-	void            rtty_showStrength	(float);
+	void            rtty_showIF		(float);
 	void		rtty_showFreqCorrection	(float);
 	void		rtty_showBaudRate	(int);
 	void		rtty_showGuess		(int);

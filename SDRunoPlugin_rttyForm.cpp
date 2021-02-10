@@ -40,7 +40,7 @@ void	SDRunoPlugin_rttyForm::set_rttyStopbits	(const std::string &s) {
 	m_parent. set_rttyStopbits (s);
 }
 
-void	SDRunoPlugin_rttyForm::set_strengthMeter	(int v) {
+void	SDRunoPlugin_rttyForm::set_rttyIF	(int v) {
 	strengthMeter. caption (std::to_string (v));
 }
 

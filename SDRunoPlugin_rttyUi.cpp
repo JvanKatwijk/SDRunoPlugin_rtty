@@ -120,10 +120,10 @@ void	SDRunoPlugin_rttyUi::set_rttyStopbits	(const std::string &s) {
 	m_parent. set_rttyStopbits (s);
 }
 
-void	SDRunoPlugin_rttyUi::set_strengthMeter	(int v) {
+void	SDRunoPlugin_rttyUi::set_rttyIF	(int v) {
 	std::lock_guard<std::mutex> l (m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_strengthMeter (v);
+	   m_form -> set_rttyIF (v);
 }
 
 void	SDRunoPlugin_rttyUi::set_freqCorrection	(int v) {

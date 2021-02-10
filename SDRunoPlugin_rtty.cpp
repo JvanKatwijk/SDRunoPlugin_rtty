@@ -227,7 +227,7 @@ static int seconds = 0;
 	strength_1 += get_db (abs (z));
 	cnt++;
 	if (cnt > INRATE) {
-	   rtty_showStrength (strength_1 / INRATE);
+	   rtty_showIF (strength_1 / INRATE);
 	   seconds++;
 	   rtty_showGuess (seconds);
 	   cnt = 0;
@@ -318,7 +318,7 @@ std::vector<std::complex<float>> tone (rttyAudioRate / WORKING_RATE);
 	if (++rttyCycleCount > WORKING_RATE) {
 	   rttyCycleCount	= 0;
 	   rtty_showFreqCorrection ((float)rttyFreqError);
-	   rtty_showStrength   ((float)rttyIF);
+	   rtty_showIF		((float)rttyIF);
 	   rtty_showGuess      ((int)(2.0 * FreqOffset));
 	}
 }
@@ -391,15 +391,13 @@ uint8_t	data;
 }
 
 /*
- *	frequency is "equal" to (+ or -) rttyShift / 2 when
- *	rttyIF is precisely in the middle between the mark and the space.
- *	Adjust slowly if needed
+ *	Ideally the frequency f is either -rttyShift / 2 or rttyShift / 2
  */
 double SDRunoPlugin_rtty::adjust_IF (double f) {
 
-	f	= f > 0 ? f - rttyShift / 2 : f + rttyShift / 2;
+	f	= f > 0 ? rttyShift / 2 - f : - rttyShift / 2 - f;
 	if (fabs (f) < rttyShift / 2)
-	   return f / 512;
+	   return -f / 512;
 
 	return 0.0;
 }
@@ -694,8 +692,8 @@ int16_t stopbits;
 //
 //	These functions display values on the gui
 //
-void	SDRunoPlugin_rtty::rtty_showStrength	(float v) {
-	m_form. set_strengthMeter ((int)v);
+void	SDRunoPlugin_rtty::rtty_showIF	(float v) {
+	m_form. set_rttyIF ((int)v);
 }
 
 void	SDRunoPlugin_rtty::rtty_showFreqCorrection	(float v) {

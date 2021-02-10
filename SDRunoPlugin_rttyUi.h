@@ -39,7 +39,7 @@ public:
 	void    set_rttyNbits           (const std::string &);
 	void    set_rttyStopbits        (const std::string &);
 
-	void    set_strengthMeter       (int v);
+	void    set_rttyIF	        (int v);
 	void    set_freqCorrection      (int v);
 	void    set_rttyBaudRate        (int v);
 	void    set_rttyGuess           (int v);
