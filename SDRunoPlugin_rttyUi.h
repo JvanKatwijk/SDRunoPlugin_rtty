@@ -29,7 +29,8 @@ public:
 
 	int LoadX			();
 	int LoadY			();
-
+//
+//	going up
 	void    set_rttyAfcon           (const std::string &);
 	void    set_rttyReverse         (const std::string &);
 	void    set_rttyShift           (const std::string &);
@@ -39,12 +40,14 @@ public:
 	void    set_rttyNbits           (const std::string &);
 	void    set_rttyStopbits        (const std::string &);
 
-	void    set_rttyIF	        (int v);
-	void    set_freqCorrection      (int v);
-	void    set_rttyBaudRate        (int v);
-	void    set_rttyGuess           (int v);
+//
+//	coming down
+	void	show_rttyIF	       (int v);
+	void	show_freqCorrection    (int v);
+	void	show_rttyBaudRate      (int v);
+	void    show_rttyGuess          (int v);
 
-	void	set_rttyText		(const std::string &);
+	void	show_rttyText		(const std::string &);
 
 private:
 	

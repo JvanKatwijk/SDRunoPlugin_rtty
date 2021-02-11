@@ -40,23 +40,23 @@ void	SDRunoPlugin_rttyForm::set_rttyStopbits	(const std::string &s) {
 	m_parent. set_rttyStopbits (s);
 }
 
-void	SDRunoPlugin_rttyForm::set_rttyIF	(int v) {
+void	SDRunoPlugin_rttyForm::show_rttyIF	(int v) {
 	strengthMeter. caption (std::to_string (v));
 }
 
-void	SDRunoPlugin_rttyForm::set_freqCorrection	(int v) {
+void	SDRunoPlugin_rttyForm::show_freqCorrection	(int v) {
 	freqCorrection. caption (std::to_string (v));
 }
 
-void	SDRunoPlugin_rttyForm::set_rttyBaudRate	(int v) {
+void	SDRunoPlugin_rttyForm::show_rttyBaudRate	(int v) {
 	rttyBaudRate. caption (std::to_string (v));
 }
 
-void	SDRunoPlugin_rttyForm::set_rttyGuess	(int v) {
+void	SDRunoPlugin_rttyForm::show_rttyGuess	(int v) {
 	rttyGuess. caption (std::to_string (v));
 }
 
-void	SDRunoPlugin_rttyForm::set_rttyText		(const std::string &s) {
+void	SDRunoPlugin_rttyForm::show_rttyText	(const std::string &s) {
 	rttyText. caption (s);
 }
 
@@ -331,7 +331,7 @@ void	SDRunoPlugin_rttyForm::Setup() {
 // TODO: Extra Form code goes here
 
 	strengthMeter.  caption (std::to_string (0));
-	strengthMeter. tooltip ("estimated IF");
+	strengthMeter. tooltip ("IF after correction");
 	freqCorrection. caption (std::to_string (0));
 	freqCorrection. tooltip ("estimated freq correction");
 	rttyBaudRate.  caption (std::to_string (0));

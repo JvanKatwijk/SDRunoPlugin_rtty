@@ -120,33 +120,33 @@ void	SDRunoPlugin_rttyUi::set_rttyStopbits	(const std::string &s) {
 	m_parent. set_rttyStopbits (s);
 }
 
-void	SDRunoPlugin_rttyUi::set_rttyIF	(int v) {
+void	SDRunoPlugin_rttyUi::show_rttyIF	(int v) {
 	std::lock_guard<std::mutex> l (m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_rttyIF (v);
+	   m_form -> show_rttyIF (v);
 }
 
-void	SDRunoPlugin_rttyUi::set_freqCorrection	(int v) {
-	std::lock_guard<std::mutex> l (m_lock);
+void	SDRunoPlugin_rttyUi::show_freqCorrection(int v) {
+	std::lock_guard<std::mutex> l(m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_freqCorrection (v);
+		m_form-> show_freqCorrection(v);
 }
 
-void	SDRunoPlugin_rttyUi::set_rttyBaudRate	(int v) {
+void	SDRunoPlugin_rttyUi::show_rttyBaudRate	(int v) {
 	std::lock_guard<std::mutex> l (m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_rttyBaudRate (v);
+	   m_form -> show_rttyBaudRate (v);
 }
 
-void	SDRunoPlugin_rttyUi::set_rttyGuess	(int v) {
+void	SDRunoPlugin_rttyUi::show_rttyGuess	(int v) {
 	std::lock_guard<std::mutex> l (m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_rttyGuess (v);
+	   m_form -> show_rttyGuess (v);
 }
 
-void	SDRunoPlugin_rttyUi::set_rttyText	(const std::string &s) {
+void	SDRunoPlugin_rttyUi::show_rttyText	(const std::string &s) {
 	std::lock_guard<std::mutex> l (m_lock);
 	if (m_form != nullptr)
-	   m_form -> set_rttyText (s);
+	   m_form -> show_rttyText (s);
 }
 

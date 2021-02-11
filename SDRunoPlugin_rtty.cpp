@@ -94,7 +94,7 @@ SDRunoPlugin_rtty::
         SDRplay_Rate	= m_controller -> GetSampleRate (0);
         rttyError         = false;
         if ((SDRplay_Rate != 2000000 / 32) || (rttyAudioRate != 48000)) {
-           m_form.  set_rttyText ("Please set input rate 2000000 / 32 and audiorate to 48000");
+           m_form.  show_rttyText ("Please set input rate 2000000 / 32 and audiorate to 48000");
            rttyError      = true;
         }
 
@@ -188,7 +188,7 @@ Complex buffer [BUFFER_SIZE];
 	   }  
 	}
 
-	m_form.set_rttyText("We zijn aan het eind");
+	m_form. show_rttyText ("going down");
 	Sleep(1000);
 }
 
@@ -693,24 +693,24 @@ int16_t stopbits;
 //	These functions display values on the gui
 //
 void	SDRunoPlugin_rtty::rtty_showIF	(float v) {
-	m_form. set_rttyIF ((int)v);
+	m_form. show_rttyIF ((int)v);
 }
 
 void	SDRunoPlugin_rtty::rtty_showFreqCorrection	(float v) {
-	m_form. set_freqCorrection ((int)v);
+	m_form. show_freqCorrection ((int)v);
 }
 
 void	SDRunoPlugin_rtty::rtty_showBaudRate		(int bd)  {
-	m_form. set_rttyBaudRate (bd);
+	m_form. show_rttyBaudRate (bd);
 }
 
 void	SDRunoPlugin_rtty::rtty_showGuess		(int g)	  {
-	m_form. set_rttyGuess (g);
+	m_form. show_rttyGuess (g);
 }
 
 static	std::string textLine;
 void	SDRunoPlugin_rtty::rtty_clrText			()	  {
-	m_form.  set_rttyText ("");
+	m_form.  show_rttyText ("");
 	textLine	= "";
 }
 
@@ -720,6 +720,6 @@ void	SDRunoPlugin_rtty::rtty_addText			(char c)  {
 	textLine. append (1, c);
 	if (textLine. length () > 60)
 	   textLine. erase (0, 1);
-	m_form. set_rttyText (textLine);
+	m_form. show_rttyText (textLine);
 }
   
