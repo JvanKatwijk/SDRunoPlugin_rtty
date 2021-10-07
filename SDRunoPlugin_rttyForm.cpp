@@ -183,6 +183,7 @@ void	SDRunoPlugin_rttyForm::Setup() {
 	bmInfo_min.bmiHeader.biCompression = BI_RGB;
 	bmInfo_min_over.bmiHeader.biCompression = BI_RGB;
 	bmInfo_bar.bmiHeader.biCompression = BI_RGB;
+	bmInfo_sett.bmiHeader.biCompression = BI_RGB;
 	bmInfo_sett_over.bmiHeader.biCompression = BI_RGB;
 	borderHeader.bfOffBits = rawDataOffset;
 	borderHeader.bfSize = bmInfo_border.bmiHeader.biSizeImage;
@@ -341,6 +342,7 @@ void	SDRunoPlugin_rttyForm::Setup() {
 
 	xx1.caption ("shift");
 	widthSelector. push_back ("170");
+	widthSelector. push_back ("85");
         widthSelector. push_back ("300");
         widthSelector. push_back ("450");
         widthSelector. push_back ("600");
@@ -411,6 +413,17 @@ void	SDRunoPlugin_rttyForm::Setup() {
 
 	rttyText.transparent(true);
 	rttyText.fgcolor(nana::colors::white);
+
+	delete[] borderPixels;
+	delete[] innerPixels;
+	delete[] closePixels;
+	delete[] closeoverPixels;
+	delete[] minPixels;
+	delete[] minoverPixels;
+	delete[] barPixels;
+	delete[] barfocusedPixels;
+	delete[] settPixels;
+	delete[] settoverPixels;
 }
 
 void SDRunoPlugin_rttyForm::SettingsButton_Click () {
