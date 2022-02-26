@@ -20,24 +20,20 @@
 #define  _USE_MATH_DEFINES
 #include	<math.h>
 //
-//	This will only work with the rate set to 2000000 / 32
 SDRunoPlugin_rtty::
 	     SDRunoPlugin_rtty (IUnoPluginController& controller) :
 	                                         IUnoPlugin  (controller),
 	                                         m_form   (*this, controller),
 	                                         m_worker (nullptr),
 	                                         rttyBuffer (128 * 32768),
-	                                         theMixer      (INRATE),
 	                                         passbandFilter (11,
-	                                                         -1500,
-	                                                         +1500,
+	                                                         -1000,
+	                                                         +1000,
 	                                                         INRATE),
-	                                         theDecimator (DECIMATOR),
-	                                         localShifter (WORKING_RATE),
+	                                         theDecimator (INRATE / WORKING_RATE ),
 	                                         rttyAudioBuffer (16 * 32768),
 	                                         rttyToneBuffer (192) {
 	m_controller		= &controller;
-	SDRplay_Rate		= INRATE;
 	running. store (false);
 
 	rttyPrevsample          = std::complex<float> (0, 0);
@@ -73,31 +69,13 @@ SDRunoPlugin_rtty::
 	rttyNegFreq             = 0.0;
 	rttyFreqError           = 0.0;
 
-//	we want to "work" with a rate of 12000, and since we arrive
-//      from IN_RATE we first decimate and filter to 12500 and then
-//      interpolate for the rest
-        for (int i = 0; i < WORKING_RATE / 100; i ++) {
-           float inVal  = float (INTERM_RATE / 100);
-           mapTable_int [i]     =  int (floor (i * (inVal / (WORKING_RATE / 100))));
-           mapTable_float [i]   = i * (inVal / (WORKING_RATE / 100)) - mapTable_int [i];
-        }
-        convIndex       = 0;
-        convBuffer. resize (INTERM_RATE / 100 + 1);
-
 	rttyTonePhase	= 0;
-	m_controller	-> RegisterStreamProcessor (0, this);
+//	m_controller	-> RegisterStreamProcessor (0, this);
 	m_controller	-> RegisterAudioProcessor (0, this);
-	selectedFrequency
-                        = m_controller -> GetVfoFrequency (0);
-        centerFrequency = m_controller -> GetCenterFrequency (0);
+	m_controller	-> SetDemodulatorType (0,
+	                         IUnoPluginController::DemodulatorIQOUT);
         rttyAudioRate	= m_controller -> GetAudioSampleRate (0);
-        SDRplay_Rate	= m_controller -> GetSampleRate (0);
         rttyError         = false;
-        if ((SDRplay_Rate != 2000000 / 32) || (rttyAudioRate != 48000)) {
-           m_form.  show_rttyText ("Please set input rate 2000000 / 32 and audiorate to 48000");
-           rttyError      = true;
-        }
-
 	rttyToneBuffer. resize (rttyAudioRate);
 	for (int i = 0; i < rttyAudioRate; i ++) {
 	   float term = (float)i / rttyAudioRate * 2 * M_PI;
@@ -124,8 +102,8 @@ void	SDRunoPlugin_rtty::StreamProcessorProcess (channel_t	channel,
 	                                           Complex	*buffer,
 	                                           int		length,
 	                                           bool		&modified) {
-	if (running. load () && !rttyError)
-	   rttyBuffer. putDataIntoBuffer (buffer, length);
+	(void)channel; (void)buffer;
+	(void)length;
 	modified = false;
 }
 
@@ -133,24 +111,29 @@ void	SDRunoPlugin_rtty::AudioProcessorProcess (channel_t channel,
 	                                          float* buffer,
 	                                          int length,
 	                                          bool& modified) {
+//	Handling IQ input, note that SDRuno interchanges I and Q elements
+	if (!modified) {
+	   for (int i = 0; i < length; i++) {
+	      std::complex<float> sample =
+                           std::complex<float>(buffer [2 * i +  1],
+                                               buffer [2 * i]);
+	      sample = passbandFilter.Pass (sample);
+              if (theDecimator.Pass (sample, &sample))
+                 rttyBuffer.putDataIntoBuffer (&sample, 1);
+           }
+        }
+
+
 	if (rttyAudioBuffer. GetRingBufferReadAvailable () >= length * 2) {
 	   rttyAudioBuffer. getDataFromBuffer (buffer, length * 2);
-	   modified = true;
 	}
-	else
-	   modified = false;
+
+	modified = true;
 }
 
 void	SDRunoPlugin_rtty::HandleEvent (const UnoEvent& ev) {
 	switch (ev. GetType ()) {
 	   case UnoEvent::FrequencyChanged:
-	      selectedFrequency =
-	              m_controller ->GetVfoFrequency (ev. GetChannel ());
-	      centerFrequency = m_controller -> GetCenterFrequency(0);
-	      locker. lock ();
-	      passbandFilter.
-	             update (selectedFrequency - centerFrequency, 3000);
-	      locker. unlock ();
 	      break;
 
 	   case UnoEvent::CenterFrequencyChanged:
@@ -164,7 +147,7 @@ void	SDRunoPlugin_rtty::HandleEvent (const UnoEvent& ev) {
 
 #define	BUFFER_SIZE 4096
 void	SDRunoPlugin_rtty::WorkerFunction () {
-Complex buffer [BUFFER_SIZE];
+std::complex<float> buffer [BUFFER_SIZE];
 
 	running. store (true);
 	while (running. load ()) {
@@ -173,18 +156,9 @@ Complex buffer [BUFFER_SIZE];
 	      Sleep (1);
 	   if (!running. load ())
 	      break;
-	   int N = rttyBuffer. getDataFromBuffer (buffer, BUFFER_SIZE);
-	   int theOffset = centerFrequency - selectedFrequency;
+	   rttyBuffer. getDataFromBuffer (buffer, BUFFER_SIZE);
 	   for (int i = 0; i < BUFFER_SIZE; i++) {
-	      std::complex<float> sample =
-	                std::complex<float>(buffer [i]. real, buffer [i]. imag);
-	      locker.lock ();
-	      sample   = passbandFilter. Pass (sample);
-	      locker.unlock ();
-	      sample   = theMixer. do_shift (sample, -theOffset);
-	      if (theDecimator. Pass (sample, &sample))
-//	         testInput(sample);
-	         process (sample);
+	       processSample (buffer [i]);
 	   }  
 	}
 
@@ -197,57 +171,10 @@ std::complex<float> cmul(std::complex<float> x, float y) {
         return std::complex<float>(real(x) * y, imag(x) * y);
 }
 
-int     SDRunoPlugin_rtty::resample       (std::complex<float> in,
-                                           std::complex<float> *out) {
-        convBuffer [convIndex ++] = in;
-        if (convIndex >= convBuffer. size ()) {
-           for (int i = 0; i < WORKING_RATE / 100; i ++) {
-              int16_t  inpBase       = mapTable_int [i];
-              float    inpRatio      = mapTable_float [i];
-              out [i]       = cmul (convBuffer [inpBase + 1], inpRatio) +
-                                  cmul (convBuffer [inpBase], 1 - inpRatio);
-           }
-           convBuffer [0]       = convBuffer [convBuffer. size () - 1];
-           convIndex    = 1;
-           return WORKING_RATE / 100;
-        }
-        return -1;
-}
-
 //	just for some testing
 float	get_db(float z) {
 	return 20 * log10 ((z + 0.01) / 2048);
 }
-
-void	SDRunoPlugin_rtty::testInput (std::complex<float> z) {
-static float strength_1 = 0;
-static	int cnt = 0;
-static int seconds = 0;
-
-	strength_1 += get_db (abs (z));
-	cnt++;
-	if (cnt > INRATE) {
-	   rtty_showIF (strength_1 / INRATE);
-	   seconds++;
-	   rtty_showGuess (seconds);
-	   cnt = 0;
-	   strength_1 = 0;
-	}
-}
-
-void    SDRunoPlugin_rtty::process (std::complex<float> z) {
-std::complex<float> out [256];	// IN_RATE / DECIMATOR
-int     cnt;
-
-        cnt = resample (z, out);
-        if (cnt < 0)
-           return;
-
-        for (int i = 0; i < cnt; i++) {
-           processSample (out[i]);
-        }
-}
-
 /*
  *	feed the sample here
  */
@@ -268,8 +195,9 @@ std::vector<std::complex<float>> tone (rttyAudioRate / WORKING_RATE);
 	   tone [i] *= rttyToneBuffer [rttyTonePhase];
 	   rttyTonePhase = (rttyTonePhase + 801) % rttyAudioRate;
 	}
+
 	rttyAudioBuffer. putDataIntoBuffer (tone. data (), tone. size () * 2);
-	z	= localShifter. do_shift (z, (int)rttyIF);
+//	z	= localShifter. do_shift (z, (int)rttyIF);
 
 // 	then we apply slicing to end up with omega and
 //	we compute the frequency offset

@@ -340,6 +340,10 @@ void	SDRunoPlugin_rttyForm::Setup() {
 	rttyGuess.caption("0");
 	rttyGuess. tooltip ("estimated shift");
 
+	copyRightLabel. transparent(true);
+	copyRightLabel. fgcolor (nana::colors::white);
+	copyRightLabel. caption ("\xA9");
+	copyRightLabel. tooltip ("created by Jan van Katwijk, all rights reserved");
 	xx1.caption ("shift");
 	widthSelector. push_back ("170");
 	widthSelector. push_back ("85");

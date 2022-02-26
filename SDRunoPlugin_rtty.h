@@ -36,8 +36,7 @@ class		rttyAverage;
 
 #define         RTTY_IF         0
 #define         DECIMATOR       5
-#define         INRATE          (2000000 / 32)
-#define         INTERM_RATE     (INRATE / DECIMATOR)
+#define         INRATE          192000
 #define         WORKING_RATE    12000
 
 class SDRunoPlugin_rtty : public IUnoPlugin,
@@ -83,25 +82,17 @@ private:
 	std::mutex		locker;
 	IUnoPluginController	*m_controller;
 	RingBuffer<Complex>	rttyBuffer;
-	rttyShifter		theMixer;
+//	rttyShifter		theMixer;
 	rttyBandfilter		passbandFilter;
 	decimator_25		theDecimator;
-	rttyShifter		localShifter;
+//rttyShifter		localShifter;
 	RingBuffer<float>	rttyAudioBuffer;
 	std::vector<std::complex<float>> rttyToneBuffer;
-        std::vector<std::complex<float>> convBuffer;
-        int                     convIndex;
-        int16_t                 mapTable_int   [WORKING_RATE / 100];
-        float                   mapTable_float [WORKING_RATE / 100];
 
 	int			rttyTonePhase;
 	int			SDRplay_Rate;
 	bool			rttyError;
 	void			WorkerFunction		();
-	void			testInput		(std::complex<float>);
-	void			process			(std::complex<float>);
-	int			resample		(std::complex<float>,
-	                                                 std::complex<float> *);
 	void			processSample		(std::complex <float>);
 	void			rtty_setup		();
 	std::thread* 		m_worker;

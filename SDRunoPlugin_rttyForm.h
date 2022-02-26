@@ -83,6 +83,7 @@ private:
 	nana::label  freqCorrection {*this, nana::rectangle (30, 80, 30, 20) };
 	nana::label  rttyBaudRate  {*this, nana::rectangle (30, 120, 30, 20) };
 	nana::label  rttyGuess     {*this, nana::rectangle (30, 160, 30, 20) };
+	nana::label  copyRightLabel {*this, nana::rectangle (500, 30, 30, 20) };
 
 //
 //	then the selectors
