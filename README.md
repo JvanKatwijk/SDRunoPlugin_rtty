@@ -11,12 +11,15 @@ decoding rtty signals transmitted on shortwave
 Installing the plugin  READ THIS FIRST
 -----------------------------------------------------------------------------
 
-Since rtty is a small band signal (for amateur modes 170 Hzz in this plugin),
-the samplerate used as input for the plugin is *62500* samples/second.
-
-**On the main widget select samplerate 2000000, and decimation factor 32**.
-
-![overview](/drm-main-widget.png?raw=true)
+Since rtty is a small band signal (for amateur modes 170 Hz in this plugin),
+the samplerate used as input for the plugin is *192000* samples/second.
+The plugin uses the SP1 stream, provided by the SDRuno framework, 
+a data stream with a rate of 192000.
+Further filtering and decimation is dome by the plufgin.
+Note that on a spectrum width a width of 2 MHz, the minimum of the
+SDRplay devices. a signal withd a width of a few 100 Hz is hard
+to detect, so use the zooming facility on the main spectrum display
+to zoom in.
 
 The plugin itself can be stored in the folder for community plugins
 
